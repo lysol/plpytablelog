@@ -10,9 +10,7 @@
  *
  */
 
-BEGIN;
 \i /home/darnold/Development/logging_system/logging.schema.sql
 \i /home/darnold/Development/logging_system/logging.functions.sql
 \i /home/darnold/Development/logging_system/logging.configure.sql
 \i /home/darnold/Development/logging_system/logging.schedule_prune.sql
-COMMIT;

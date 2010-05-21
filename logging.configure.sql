@@ -12,7 +12,6 @@
 
 */
 CREATE OR REPLACE FUNCTION logging.build_setup() RETURNS VOID AS $$
-plpy.notice("Rebuilding the data for the setup table.")
 plpy.execute("TRUNCATE TABLE logging.setup;")
 
 setups = [

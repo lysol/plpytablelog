@@ -6,7 +6,6 @@
     ~ DRA
 */
 
-DROP SCHEMA IF EXISTS logging CASCADE;
 CREATE SCHEMA logging;
 COMMENT ON SCHEMA logging IS 'Logging schema containts setup, deployment, and storage for logging on table objects.';
 CREATE TABLE logging.setup (
