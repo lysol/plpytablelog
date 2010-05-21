@@ -14,4 +14,4 @@ def process_file(file_name):
 source_file = 'logging.install.sql'
 process_file(source_file)
 
-print "\n".join(out_lines)
+print "".join(out_lines)
