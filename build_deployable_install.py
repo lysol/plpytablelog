@@ -32,14 +32,14 @@ text = "            ".join(out_lines)
 text = """
     CREATE OR REPLACE FUNCTION logging_install() RETURNS VOID AS $INSTALL$
         BEGIN
-        BEGIN
+        --BEGIN
 """ + text + """
-        EXCEPTION WHEN OTHERS THEN
-            RETURN;
-        END;
+        --EXCEPTION WHEN OTHERS THEN
+        --    RETURN;
+        --END;
         END;
         $INSTALL$ LANGUAGE plpgsql VOLATILE;
         SELECT logging_install();
 """
 
-print text
+print text.replace("\n", "\\n").replace("'", "\\'")

@@ -14,3 +14,4 @@
 \i /home/darnold/Development/logging_system/logging.reconstruct_query.sql
 \i /home/darnold/Development/logging_system/logging.prune.sql
 \i /home/darnold/Development/logging_system/logging.original_record.sql
+\i /home/darnold/Development/logging_system/logging.get_record.sql
