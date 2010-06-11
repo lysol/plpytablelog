@@ -63,7 +63,7 @@ indexes = [row['indexname'] for row in plpy.execute("SELECT indexname FROM" + \
 
 # Add a column here if you want to change indexes.  Simply add it here, then
 # SELECT logging.deploy();
-index_columns = ('query_id', 'record_seq')
+index_columns = ('query_id', 'record_seq', 'column_name', 'event')
 
 for log_table in log_tables:
     if log_table not in schema_tables:

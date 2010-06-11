@@ -65,9 +65,7 @@ first_change = plpy.execute(first_change_plan,
 for row in filter(lambda x: x['column_name'] != '', first_change):
     column_values[row['column_name']] = row['old_value']
 
-plpy.notice(column_values)
 columns = current_row[0].keys()
-plpy.notice(columns)
 for column in filter(lambda x: x not in column_values.keys(), columns):
     column_values[column] = current_row[0][column]
 
