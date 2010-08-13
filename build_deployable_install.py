@@ -45,6 +45,13 @@ def main():
     text = """
         CREATE OR REPLACE FUNCTION logging_install() RETURNS VOID AS $INSTALL$
             BEGIN
+            IF (
+                SELECT 'logging' IN (
+                    SELECT nspname
+                    FROM pg_catalog.pg_namespace
+                    )
+               ) THEN RETURN;
+            END IF;
             --BEGIN
     """ + text + """
             --EXCEPTION WHEN OTHERS THEN

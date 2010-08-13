@@ -44,6 +44,7 @@ setups = [
     ['public', 'slpartstoorder', 'sl', ""],
     ['public', 'sllookup', 'sl', ""],
     ['public', 'sllookupparts', 'sl', ""],
+    ['public', 'pypersonneltimecard', 'py', ""],
     ]
 
 plan = plpy.prepare("""
