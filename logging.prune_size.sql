@@ -3,10 +3,9 @@ CREATE OR REPLACE FUNCTION logging.prune_size(max_log_size bigint) RETURNS boole
 #
 #   logging.prune_size()
 #
-#   This function is designed to be run nightly. This function will check for a
-#   logging.settings table and row to check for a maximum log table size. If
-#   the calculation comes up with a number of rows to delete to meet the max
-#   size, it'll delete that number of records.
+#   This function is designed to be run nightly. If the calculation comes up
+#   with a number of rows to delete to meet the max size, it'll delete that
+#   number of records from each log table.
 #   ~ DRA
 #
 
