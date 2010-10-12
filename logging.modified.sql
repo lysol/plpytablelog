@@ -11,6 +11,18 @@ CREATE OR REPLACE FUNCTION logging.modified() RETURNS trigger AS $$
 
 from datetime import datetime
 
+# First check if logging_disable is present (and temporary)
+
+blocked = plpy.execute("""
+    SELECT count(*) FROM information_schema.tables
+    WHERE table_name = 'logging_disable'
+    AND table_type = 'LOCAL TEMPORARY'
+    """)[0]['count']
+
+if blocked == 1:
+    return
+
+
 # Ask the kind sequence for our next ID.  All inserts on the same event will
 # have the same query ID.
 query_id = plpy.execute("""
