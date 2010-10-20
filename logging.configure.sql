@@ -12,77 +12,67 @@
 
 */
 CREATE OR REPLACE FUNCTION logging.build_setup() RETURNS VOID AS $$
-plpy.execute("TRUNCATE TABLE logging.setup;")
-
-setups = [
-    ['public', 'lyvehicle', 'ly', ""],
-    ['public', 'lystock', 'ly', ""],
-    ['public', 'lybuy', 'ly', ""],
-    ['public', 'lylease', 'ly', ""],
-    ['public', 'lydeal', 'ly', ""],
-    ['public', 'lycustomer', 'ly', ""],
-    ['public', 'lysalespay', 'ly', ""],
-    ['public', 'slro', 'sl', ""],
-    ['public', 'slrojobs', 'sl', ""],
-    ['public', 'slroparts', 'sl', ""],
-    ['public', 'slrotechs', 'sl', ""],
-    ['public', 'slempmaster', 'sl', ""],
-    ['public', 'scschedule', 'sl', ""],
-    ['public', 'scjobs', 'sl', ""],
-    ['public', 'scappt', 'sl', ""],
-    ['public', 'scloaner', 'sl', ""],
-    ['public', 'scloanerrecord', 'sl', ""],
-    ['public', 'slctparts', 'sl', ""],
-    ['public', 'slct', 'sl', ""],
-    ['public', 'slpo', 'sl', ""],
-    ['public', 'slpoparts', 'sl', ""],
-    ['public', 'slparts', 'sl', ""],
-    ['public', 'acchart', 'ac', ""],
-    ['public', 'acglheader', 'ac', ""],
-    ['public', 'acar', 'ac', ""],
-    ['public', 'acap', 'ac', ""],
-    ['public', 'actemplate', 'ac', ""],
-    ['public', 'acstringline', 'ac', ""],
-    ['public', 'acsetup', 'ac', ""],
-    ['public', 'acreceipts', 'ac', ""],
-    ['public', 'acapinvoice', 'ac', ""],
-    ['public', 'acarinvoice', 'ac', ""],
-    ['public', 'accheck', 'ac', ""],
-    ['public', 'acapsetup', 'ac', ""],
-    ['public', 'acarsetup', 'ac', ""],
-    ['public', 'acchartidlinksetup', 'ac', ""],
-    ['public', 'acstatement', 'ac', ""],
-    ['public', 'actemplate', 'ac', ""],
-    ['public', 'crreportsetup', 'cr', ""],
-    ['public', 'lyfisetup', 'ly', ""],
-    ['public', 'lysetup', 'ly', ""],
-    ['public', 'mcmiscentry', 'mc', ""],
-    ['public', 'pyimportsetup', 'py', ""],
-    ['public', 'pypayimportsetup', 'py', ""],
-    ['public', 'pysetup', 'py', ""],
-    ['public', 'scadvisorsetup', 'sc', ""],
-    ['public', 'scbdeptsetup', 'sc', ""],
-    ['public', 'scsetup', 'sc', ""],
-    ['public', 'sldispatchsetup', 'sl', ""],
-    ['public', 'slmfgsetup', 'sl', ""],
-    ['public', 'slsetup', 'sl', ""],
-    ['public', 'slpartstoorder', 'sl', ""],
-    ['public', 'sllookup', 'sl', ""],
-    ['public', 'sllookupparts', 'sl', ""],
-    ['public', 'pypersonneltimecard', 'py', ""],
-    ]
-
-plan = plpy.prepare("""
-    INSERT INTO logging.setup
-        (schema_name, table_name, log_table, modified_by_field)
-        VALUES
-        ($1, $2, $3, $4)
-    """, ['text', 'text', 'text', 'text'])
-
-for setup in setups:
-    plpy.execute(plan, setup)
-
-$$ LANGUAGE plpythonu VOLATILE;
+TRUNCATE TABLE logging.setup;
+INSERT INTO logging.setup
+    (schema_name, table_name, log_table, modified_by_field, exclude_events)
+    VALUES
+    ('public', 'lyvehicle', 'ly', '', NULL),
+    ('public', 'lystock', 'ly', '', NULL),
+    ('public', 'lybuy', 'ly', '', NULL),
+    ('public', 'lylease', 'ly', '', NULL),
+    ('public', 'lydeal', 'ly', '', NULL),
+    ('public', 'lycustomer', 'ly', '', NULL),
+    ('public', 'lysalespay', 'ly', '', NULL),
+    ('public', 'slro', 'sl', '', NULL),
+    ('public', 'slrojobs', 'sl', '', NULL),
+    ('public', 'slroparts', 'sl', '', NULL),
+    ('public', 'slrotechs', 'sl', '', NULL),
+    ('public', 'slempmaster', 'sl', '', NULL),
+    ('public', 'scschedule', 'sl', '', NULL),
+    ('public', 'scjobs', 'sl', '', NULL),
+    ('public', 'scappt', 'sl', '', NULL),
+    ('public', 'scloaner', 'sl', '', NULL),
+    ('public', 'scloanerrecord', 'sl', '', NULL),
+    ('public', 'slctparts', 'sl', '', NULL),
+    ('public', 'slct', 'sl', '', NULL),
+    ('public', 'slpo', 'sl', '', NULL),
+    ('public', 'slpoparts', 'sl', '', NULL),
+    ('public', 'slparts', 'sl', '', NULL),
+    ('public', 'acchart', 'ac', '', NULL),
+    ('public', 'acglheader', 'ac', '', NULL),
+    ('public', 'acar', 'ac', '', NULL),
+    ('public', 'acap', 'ac', '', NULL),
+    ('public', 'actemplate', 'ac', '', NULL),
+    ('public', 'acstringline', 'ac', '', NULL),
+    ('public', 'acsetup', 'ac', '', NULL),
+    ('public', 'acreceipts', 'ac', '', NULL),
+    ('public', 'acapinvoice', 'ac', '', NULL),
+    ('public', 'acarinvoice', 'ac', '', NULL),
+    ('public', 'accheck', 'ac', '', NULL),
+    ('public', 'acapsetup', 'ac', '', NULL),
+    ('public', 'acarsetup', 'ac', '', NULL),
+    ('public', 'acchartidlinksetup', 'ac', '', NULL),
+    ('public', 'acstatement', 'ac', '', NULL),
+    ('public', 'actemplate', 'ac', '', NULL),
+    ('public', 'crreportsetup', 'cr', '', NULL),
+    ('public', 'lyfisetup', 'ly', '', NULL),
+    ('public', 'lysetup', 'ly', '', NULL),
+    ('public', 'mcmiscentry', 'mc', '', NULL),
+    ('public', 'pyimportsetup', 'py', '', NULL),
+    ('public', 'pypayimportsetup', 'py', '', NULL),
+    ('public', 'pysetup', 'py', '', NULL),
+    ('public', 'scadvisorsetup', 'sc', '', NULL),
+    ('public', 'scbdeptsetup', 'sc', '', NULL),
+    ('public', 'scsetup', 'sc', '', NULL),
+    ('public', 'sldispatchsetup', 'sl', '', NULL),
+    ('public', 'slmfgsetup', 'sl', '', NULL),
+    ('public', 'slsetup', 'sl', '', NULL),
+    ('public', 'slpartstoorder', 'sl', '', NULL),
+    ('public', 'sllookup', 'sl', '', NULL),
+    ('public', 'sllookupparts', 'sl', '', NULL),
+    ('public', 'pypersonneltimecard', 'py', '', NULL),
+    ('public', 'acline', 'ac', '', ARRAY['INSERT'])
+$$ LANGUAGE SQL VOLATILE;
 
 SELECT logging.build_setup();
 SELECT logging.deploy();

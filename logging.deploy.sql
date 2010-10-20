@@ -7,8 +7,12 @@ CREATE OR REPLACE FUNCTION logging.deploy() RETURNS boolean AS $$
 #   logging tables and indexes as needed, and finally,
 #   installs the triggers to perform the logging itself.
 #
+
+def pglist(instring):
+    return instring[1:-1].split(',')
+
 setup_records = plpy.execute("""
-    SELECT schema_name, table_name, log_table, modified_by_field
+    SELECT schema_name, table_name, log_table, modified_by_field, exclude_events
     FROM logging.setup
 """)
 
@@ -42,12 +46,19 @@ for row in setup_records:
         trigger_args.append(row['modified_by_field'])
     arg_string = ','.join(trigger_args)
     
+    if row['exclude_events'] is None:
+        before = 'INSERT OR UPDATE OR DELETE'
+    else:
+        events = pglist(row['exclude_events'])
+        events = filter(lambda e: e not in events, ['INSERT', 'UPDATE', 'DELETE'])
+        before = ' OR '.join(events)
+
     plpy.execute("""
         CREATE TRIGGER log_%s
-        BEFORE INSERT OR UPDATE OR DELETE ON %s.%s
+        BEFORE %s ON %s.%s
         FOR EACH ROW
         EXECUTE PROCEDURE logging.modified(%s)
-    """ % (row['table_name'], row['schema_name'], row['table_name'],
+    """ % (row['table_name'], before, row['schema_name'], row['table_name'],
         arg_string))
 
 # Now, create the logging tables if they do not exist.
