@@ -23,6 +23,14 @@ INSERT INTO logging.setup
     ('public', 'lydeal', 'ly', '', NULL),
     ('public', 'lycustomer', 'ly', '', NULL),
     ('public', 'lysalespay', 'ly', '', NULL),
+    ('public', 'slmatrixlists', 'sl', '', NULL),
+    ('public', 'slpartsdiscountcodes', 'sl', '', NULL),
+    ('public', 'slpartsource', 'sl', '', NULL),
+    ('public', 'slvendor', 'sl', '', NULL),
+    ('public', 'sltaxtable', 'sl', '', NULL),
+    ('public', 'sltaxkey', 'sl', '', NULL),
+    ('public', 'sllabormatrix', 'sl', '', NULL),
+    ('public', 'slrohoursaudit', 'sl', '', ARRAY['INSERT']),
     ('public', 'slro', 'sl', '', NULL),
     ('public', 'slrojobs', 'sl', '', NULL),
     ('public', 'slroparts', 'sl', '', NULL),
@@ -61,6 +69,8 @@ INSERT INTO logging.setup
     ('public', 'pyimportsetup', 'py', '', NULL),
     ('public', 'pypayimportsetup', 'py', '', NULL),
     ('public', 'pysetup', 'py', '', NULL),
+    ('public', 'scappt', 'sc', '', NULL),
+    ('public', 'scjobs', 'sc', '', NULL),
     ('public', 'scadvisorsetup', 'sc', '', NULL),
     ('public', 'scbdeptsetup', 'sc', '', NULL),
     ('public', 'scsetup', 'sc', '', NULL),
@@ -71,7 +81,14 @@ INSERT INTO logging.setup
     ('public', 'sllookup', 'sl', '', NULL),
     ('public', 'sllookupparts', 'sl', '', NULL),
     ('public', 'pypersonneltimecard', 'py', '', NULL),
-    ('public', 'acline', 'ac', '', ARRAY['INSERT'])
+    ('public', 'acline', 'ac', '', ARRAY['INSERT']),
+    ('public', 'cmcommissions', 'cm', '', NULL),
+    ('public', 'cmdealempcommissions', 'cm', '', NULL),
+    ('public', 'cmcommissionemps', 'cm', '', NULL),
+    ('public', 'cmcommissionroles', 'cm', '', NULL),
+    ('public', 'mcmisccodes', 'mc', '', NULL),
+    ('public', 'mcmiscentry', 'mc', '', NULL)
+
 $$ LANGUAGE SQL VOLATILE;
 
 SELECT logging.build_setup();
