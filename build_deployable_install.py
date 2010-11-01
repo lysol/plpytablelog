@@ -4,9 +4,6 @@ from optparse import OptionParser
 
 def main():
     parser = OptionParser('usage: %prog inputfile')
-    parser.add_option('-e','--escaped', dest="escaped", 
-        action="store_true", default=False, help="Enable to escape the " + \
-        "output as if it was going into a non-dollar quoted field.")
     (options, args) = parser.parse_args()
     
     out_lines = []
@@ -61,10 +58,7 @@ def main():
             $INSTALL$ LANGUAGE plpgsql VOLATILE;
             SELECT logging_install();
     """
-    if options.escaped:
-        print text.replace("\n", "\\n").replace("'", "\\'")
-    else:
-        print text
+    print text
 
 if __name__ == "__main__":
     main()
