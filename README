@@ -1,0 +1,42 @@
+This is an easily maintained table logging system for PostgreSQL. It removes
+the need for manual administration of triggers on individual tables, instead
+wrapping maintenance of the tables, triggers, and indexes on the logging tables
+into a single function.
+
+The system supports excluding specific trigger events from the log, as well as
+pruning tables based on a timeframe and size. (See logging.prune.sql and
+logging.prune_size.sql)
+
+The system also supports multiple table logs. See INSTALL for configuration of
+these.
+
+Structure of logging tables:
+
+column_name
+    Column that was modified in the query
+old_value
+new_value
+modified_by
+    User-defined field value to record. See INSTALL
+client_addr
+    Client IP address that created the change. If you are using a connection
+    pooler, this will be the IP address of the connection pooler in question.
+query_id
+    Multiple field changes created by a single query will have the same
+    query_id.
+date_modified
+record_seq
+    The originating record's seq value. This is hard-coded to use the
+    seq column in the logged table, but will become a logging.setup
+    option at a later time.
+schema_name
+    Logged table's schema
+table_name
+    Logged table's name
+event
+    The query event that fired the logging trigger. INSERTs are only recorded
+    once per query, as the data is available in the table. DELETEs will
+    record the entire record in the old_value column. UPDATEs will only
+    record the changed fields.
+
+Consult the INSTALL file for installing to your database. 

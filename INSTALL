@@ -1,0 +1,70 @@
+INSTALL
+
+Requirements: python, plpythonu, superuser access.
+
+To install, you can do one of three things
+    (probably #3 if you live in PGAdmin):
+
+1)  Use psql.
+    psql -h 1.2.3.4 -U user -f logging.base_install.sql database
+2)  Use python to build an installation script.
+    python build_deployable_install.py logging.base_install.sql
+3)  Run the pregenerated logging_install.sql via PGAdmin or otherwise on
+    your database.
+
+From there, you need to populate logging.setup.
+
+
+The table structure is:
+
+schema_name
+    The schema of the table to be logged.
+
+
+table_name
+    The table to be logged.
+
+
+log_table
+    The table name to log changes to.
+    For example, a value of 'service' will create the table logging.service,
+    and if this table does not exist, logging.deploy() will create it.
+
+
+modified_by_field
+    User-defined token.
+    If you put a column name from the logged table in this field,
+    its new value (the 'after' record in the trigger) will be recorded. This is
+    technically redundant but may make forensics a little more efficient. Its
+    original intention is a user modified field for easily tracking
+    application-level actions by individual users.
+    This defaults to the hard-coded field name 'modifiedby'.
+
+
+exclude_events
+    Exclude trigger events from the log.
+    In tables with many INSERTs and few UPDATEs, you may wish to restrict what
+    events are logged. If this field is NULL, all events are recorded. This is
+    a character varying array field.
+
+
+
+Once you make changes to logging.setup, execute logging.deploy(). This function
+generates the logging tables, indexes, and triggers on the tables in question.
+
+
+QUICK START
+
+For the impatient, the following example would log the table public.users into
+logging.userlog for all events.
+
+psql -h yourserver -f logging_install.sql
+psql -h yourserver
+> BEGIN;
+> INSERT INTO logging.setup (
+      schema_name, table_name, log_table
+  ) VALUES (
+      'public', 'users', 'userlog'
+  );
+> SELECT logging.deploy();
+> COMMIT;

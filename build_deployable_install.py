@@ -4,9 +4,17 @@ from optparse import OptionParser
 
 def main():
     parser = OptionParser('usage: %prog inputfile')
+
+    parser.add_option("-n", "--no-function", dest="nofunction",
+        action="store_true", help="Don't generate the script as a function.")
     (options, args) = parser.parse_args()
     
     out_lines = []
+
+    if len(args) != 1:
+        print "Usage: %s" % parser.usage
+        print "Missing argument"
+        exit(1)
 
     # Since Functions can't have SELECT statements that don't send results
     # somewhere, we have to replace them with PERFORM.
@@ -25,39 +33,42 @@ def main():
                 process_file(next_file)
             else:
                 appended = None
-                for trans in perform_transforms:
-                    if trans in line:
-                        out_lines.append(line.replace('SELECT', 'PERFORM'))
-                        appended = True
+                if not options.nofunction:
+                    for trans in perform_transforms:
+                        if trans in line:
+                            out_lines.append(line.replace('SELECT', 'PERFORM'))
+                            appended = True
                 if not appended:
                     out_lines.append(line)
-    if len(args) == 1:
-        source_file = args[0]
-    else:
-        source_file = 'logging.install.sql'
+    
+    source_file = args[0]
+    
     process_file(source_file)
 
-    text = "            ".join(out_lines)
+    text = "".join(out_lines)
 
-    text = """
-        CREATE OR REPLACE FUNCTION logging_install() RETURNS VOID AS $INSTALL$
-            BEGIN
-            IF (
-                SELECT 'logging' IN (
-                    SELECT nspname
-                    FROM pg_catalog.pg_namespace
-                    )
-               ) THEN RETURN;
-            END IF;
-            --BEGIN
-    """ + text + """
-            --EXCEPTION WHEN OTHERS THEN
-            --    RETURN;
-            --END;
-            END;
-            $INSTALL$ LANGUAGE plpgsql VOLATILE;
-            SELECT logging_install();
-    """
+    if not options.nofunction:
+        text = """
+            CREATE OR REPLACE FUNCTION logging_install() RETURNS VOID AS $INSTALL$
+                BEGIN
+                IF (
+                    SELECT 'logging' IN (
+                        SELECT nspname
+                        FROM pg_catalog.pg_namespace
+                        )
+                   ) THEN RETURN;
+                END IF;
+                --BEGIN
+        """ + text + """
+                --EXCEPTION WHEN OTHERS THEN
+                --    RETURN;
+                --END;
+                END;
+                $INSTALL$ LANGUAGE plpgsql VOLATILE;
+                SELECT logging_install();
+        """
+    else:
+        text = "BEGIN;\n%s\nCOMMIT;" % text
     print text
 
 if __name__ == "__main__":
