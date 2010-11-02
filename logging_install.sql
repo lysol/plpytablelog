@@ -200,7 +200,7 @@ CREATE OR REPLACE FUNCTION logging.modified() RETURNS trigger AS $$
 #
 #  This is the central trigger function that is created by logging.deploy().
 #  You should never have to manually add this to a trigger.  Instead,
-#  add a record to logging.setup.
+#  add a record to logging.setup, and SELECT logging.deploy().
 #
 #  ~ DRA
 #
