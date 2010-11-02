@@ -39,4 +39,7 @@ event
     record the entire record in the old_value column. UPDATEs will only
     record the changed fields.
 
+There are a number of other functions included that may or may not work at
+this time.
+
 Consult the INSTALL file for installing to your database. 
