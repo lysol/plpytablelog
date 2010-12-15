@@ -19,6 +19,7 @@ INSERT INTO logging.setup
     ('public', 'lyvehicle', 'ly', '', NULL),
     ('public', 'lystock', 'ly', '', NULL),
     ('public', 'lybuy', 'ly', '', NULL),
+    ('public', 'lyguest', 'ly', '', NULL),
     ('public', 'lylease', 'ly', '', NULL),
     ('public', 'lydeal', 'ly', '', NULL),
     ('public', 'lycustomer', 'ly', '', NULL),
