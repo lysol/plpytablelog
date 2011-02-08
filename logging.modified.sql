@@ -71,9 +71,14 @@ log_plan = plpy.prepare("""
         "record_seq",
         "event", "schema_name", "table_name", "column_name",
         "query_id", "client_addr", "modified_by"
-    ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, CAST($9 AS inet), $10
     )
+    SELECT $1, $2, $3, $4, $5, $6, $7, $8, CAST($9 AS inet), $10
+    WHERE NOT (
+        SELECT exclude_columns
+        FROM logging.setup
+        WHERE schema_name = $5
+        AND table_name = $6
+        ) @> ARRAY[$7]
 """ % logging_table, ["text", "text", "int4", "text", "text", "text", "text",
     "int4", "text", "text"]
 )

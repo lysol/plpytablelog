@@ -37,7 +37,7 @@ for row in setup_records:
             (row['schema_name'], row['table_name']))
         continue
 
-    plpy.execute("DROP TRIGGER IF EXISTS log_%s ON %s.%s" % \
+    plpy.execute("DROP TRIGGER IF EXISTS zzzlog_%s ON %s.%s" % \
         (row['table_name'], row['schema_name'], row['table_name']))
     
     trigger_args = [row['log_table']]
@@ -54,7 +54,7 @@ for row in setup_records:
         before = ' OR '.join(events)
 
     plpy.execute("""
-        CREATE TRIGGER log_%s
+        CREATE TRIGGER zzzlog_%s
         BEFORE %s ON %s.%s
         FOR EACH ROW
         EXECUTE PROCEDURE logging.modified(%s)

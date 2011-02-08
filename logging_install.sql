@@ -20,7 +20,7 @@ BEGIN;
 */
 
 CREATE SCHEMA logging;
-COMMENT ON SCHEMA logging IS 'Logging schema containts setup, deployment, and storage for logging on table objects.';
+COMMENT ON SCHEMA logging IS 'Version 1.1: Logging schema containts setup, deployment, and storage for logging on table objects.';
 CREATE TABLE logging.setup (
     schema_name varchar not null
     ,table_name varchar not null
@@ -28,7 +28,9 @@ CREATE TABLE logging.setup (
     ,modified_by_field varchar not null default ''
     ,"timestamp" timestamp without time zone default now() not null
     ,exclude_events character varying[] CHECK (exclude_events <@ ARRAY['INSERT', 'DELETE', 'UPDATE']::character varying[])
+    ,exclude_columns character varying[] DEFAULT ARRAY[]::character varying[]
 );
+
 COMMENT ON TABLE logging.setup IS 'Setup table for logging system.  To alter which tables are being logged, add a record to this table and execute logging.deploy().';
 CREATE SEQUENCE logging.query_id_seq;
 COMMENT ON SEQUENCE logging.query_id_seq IS 'All query_id values for all logging tables are pulled from this sequence.';
@@ -81,7 +83,7 @@ for row in setup_records:
             (row['schema_name'], row['table_name']))
         continue
 
-    plpy.execute("DROP TRIGGER IF EXISTS log_%s ON %s.%s" % \
+    plpy.execute("DROP TRIGGER IF EXISTS zzzlog_%s ON %s.%s" % \
         (row['table_name'], row['schema_name'], row['table_name']))
     
     trigger_args = [row['log_table']]
@@ -98,7 +100,7 @@ for row in setup_records:
         before = ' OR '.join(events)
 
     plpy.execute("""
-        CREATE TRIGGER log_%s
+        CREATE TRIGGER zzzlog_%s
         BEFORE %s ON %s.%s
         FOR EACH ROW
         EXECUTE PROCEDURE logging.modified(%s)
@@ -267,9 +269,14 @@ log_plan = plpy.prepare("""
         "record_seq",
         "event", "schema_name", "table_name", "column_name",
         "query_id", "client_addr", "modified_by"
-    ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, CAST($9 AS inet), $10
     )
+    SELECT $1, $2, $3, $4, $5, $6, $7, $8, CAST($9 AS inet), $10
+    WHERE NOT (
+        SELECT exclude_columns
+        FROM logging.setup
+        WHERE schema_name = $5
+        AND table_name = $6
+        ) @> ARRAY[$7]
 """ % logging_table, ["text", "text", "int4", "text", "text", "text", "text",
     "int4", "text", "text"]
 )
@@ -807,7 +814,7 @@ for row in setup_records:
             (row['schema_name'], row['table_name']))
         continue
 
-    plpy.execute("DROP TRIGGER IF EXISTS log_%s ON %s.%s" % \
+    plpy.execute("DROP TRIGGER IF EXISTS zzzlog_%s ON %s.%s" % \
         (row['table_name'], row['schema_name'], row['table_name']))
     
     trigger_args = [row['log_table']]
@@ -824,7 +831,7 @@ for row in setup_records:
         before = ' OR '.join(events)
 
     plpy.execute("""
-        CREATE TRIGGER log_%s
+        CREATE TRIGGER zzzlog_%s
         BEFORE %s ON %s.%s
         FOR EACH ROW
         EXECUTE PROCEDURE logging.modified(%s)
