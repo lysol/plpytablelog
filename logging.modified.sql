@@ -78,7 +78,7 @@ log_plan = plpy.prepare("""
         FROM logging.setup
         WHERE schema_name = $5
         AND table_name = $6
-        ) @> ARRAY[$7]
+        ) @> ARRAY[$7]::character varying[]
 """ % logging_table, ["text", "text", "int4", "text", "text", "text", "text",
     "int4", "text", "text"]
 )
