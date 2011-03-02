@@ -17,6 +17,7 @@ CREATE TABLE logging.setup (
     ,exclude_events character varying[] CHECK (exclude_events <@ ARRAY['INSERT', 'DELETE', 'UPDATE']::character varying[])
     ,exclude_columns character varying[] DEFAULT ARRAY[]::character varying[]
 );
+CREATE UNIQUE INDEX logging_setup_idx ON logging.setup (schema_name, table_name);
 
 COMMENT ON TABLE logging.setup IS 'Setup table for logging system.  To alter which tables are being logged, add a record to this table and execute logging.deploy().';
 CREATE SEQUENCE logging.query_id_seq;
