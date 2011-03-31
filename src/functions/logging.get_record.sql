@@ -1,7 +1,10 @@
 CREATE OR REPLACE FUNCTION logging.get_record(log_table character varying, log_seq integer)
  RETURNS SETOF log_record
 AS $function$
+"""
+logging.get_record
 
+"""
 return_results = []
 columns_processed = []
 

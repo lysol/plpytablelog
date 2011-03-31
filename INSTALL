@@ -1,19 +1,25 @@
-INSTALL
+QUICK START
 
-Requirements: python, plpythonu, superuser access.
+Requirements: psql, python, plpythonu, superuser access.
 
-To install, you can do one of three things
-    (probably #3 if you live in PGAdmin):
+For the impatient, the following example would log the table public.users into
+logging.userlog for all events.
 
-1)  Use psql.
-    psql -h 1.2.3.4 -U user -f logging.base_install.sql database
-2)  Use python to build an installation script.
-    python build_deployable_install.py logging.base_install.sql
-3)  Run the pregenerated logging_install.sql via PGAdmin or otherwise on
-    your database.
+-- If you haven't already done so, create plpythonu.
+psql -h yourserver -c "CREATE LANGUAGE plpythonu;"
+psql -h yourserver -f install.sql
+psql -h yourserver
+> BEGIN;
+> INSERT INTO logging.setup (
+      schema_name, table_name, log_table
+  ) VALUES (
+      'public', 'users', 'userlog'
+  );
+> SELECT logging.deploy();
+> COMMIT;
 
-From there, you need to populate logging.setup.
 
+CONFIGURATION
 
 The table structure is:
 
@@ -47,24 +53,19 @@ exclude_events
     events are logged. If this field is NULL, all events are recorded. This is
     a character varying array field.
 
+exclude_columns
+    Exclude specific columns from the log.
+    This is also a character varying array field.
 
 
 Once you make changes to logging.setup, execute logging.deploy(). This function
 generates the logging tables, indexes, and triggers on the tables in question.
 
+This WILL alter DDL on each table logged, so plan accordingly.
 
-QUICK START
+NOTES
 
-For the impatient, the following example would log the table public.users into
-logging.userlog for all events.
-
-psql -h yourserver -f logging_install.sql
-psql -h yourserver
-> BEGIN;
-> INSERT INTO logging.setup (
-      schema_name, table_name, log_table
-  ) VALUES (
-      'public', 'users', 'userlog'
-  );
-> SELECT logging.deploy();
-> COMMIT;
+There is hard-coded behavior at this time to check for the column 'seq'. This 
+is the value that is saved to record_seq. This will change in the future, but
+as of now requires that you at the very least use a column named seq to satisfy
+the trigger function.
