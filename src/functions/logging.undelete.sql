@@ -21,6 +21,8 @@ i_query := $Q$
                         AND y.table_name = ly.table_name 
                         AND y.column_name = ly.column_name
                         AND event = 'DELETE'
+                        ORDER BY date_modified DESC
+                        LIMIT 1
                     ))::varchar || '::' ||
                     (
                         SELECT data_type 
@@ -36,10 +38,17 @@ FROM
     logging.$Q$ || quote_ident(log_table_name) || $Q$ ly
     WHERE record_seq = $Q$ || orig_record_seq || $Q$
     AND table_name = $Q$ || quote_literal(orig_table_name) || $Q$
-    AND event = 'DELETE';
+    AND event = 'DELETE'
+    AND seq = (
+        SELECT max(seq) FROM logging.$Q$ || quote_ident(log_table_name) || $Q$
+        WHERE record_seq = $Q$ || orig_record_seq || $Q$
+        AND table_name = $Q$ || quote_literal(orig_table_name) || $Q$
+        AND event = 'DELETE'
+    )
     $Q$;
 RAISE NOTICE '%', i_query;
 EXECUTE i_query INTO resultant;
-RAISE NOTICE '%', resultant;
+RAISE NOTICE 'Executing query: %', resultant;
+EXECUTE resultant;
 END;
 $$ LANGUAGE PLPGSQL VOLATILE;
