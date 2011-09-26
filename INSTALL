@@ -1,7 +1,18 @@
 QUICK START
 
-Requirements: psql, python, plpythonu, superuser access.
+Requirements: psql (or PGAdmin if using install_full.sql), python,
+plpythonu, superuser access.
 
+install.sql and install_full.sql accomplish the same goal of building the base
+schema for installation and configuration. The former is suited for use with
+psql and uses the \i command to include child files, while install_full is
+built using build_deployable_install.py and includes all files in the same
+.sql file.
+
+So, in short, if you're using PGAdmin III, use install_full.sql, if you're
+using psql, use install.sql.
+
+After this is run against your database, the logging schema will be present.
 For the impatient, the following example would log the table public.users into
 logging.userlog for all events.
 
