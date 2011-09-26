@@ -17,7 +17,7 @@ logged `DELETE` events.
 
 Consult the `INSTALL` file for installing to your database. 
 
-The system also supports multiple table logs. See INSTALL for configuration of
+The system also supports multiple table logs. See `INSTALL` for configuration of
 these.
 
 Nearly every component of the logging schema, once installed, has a comment
